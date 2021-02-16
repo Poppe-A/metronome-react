@@ -20,7 +20,7 @@ class Blinker extends Component {
             tempo: null,
             timeSignature: this.props.timeSignature || 4
         }
-
+        //first commit with web audio api. already implemented, but for test purpose
     }
 
     //audio api
