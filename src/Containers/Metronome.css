@@ -1,0 +1,48 @@
+.MetronomeWindow {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background: rgb(37,89,110);
+    background: linear-gradient(49deg, rgba(37,89,110,1) 0%, rgba(32,77,96,1) 57%, rgba(85,117,130,1) 69%, rgba(85,117,130,1) 74%, rgba(32,77,96,1) 81%);
+    box-shadow: 0 0 30px black;
+}
+
+h1 {
+    font-size: 1em;
+    color: rgb(247, 240, 226);;
+}
+
+#toggleSound {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background-size: cover;
+}
+.soundOn {
+    background-image: url('../Images/sound.png');
+}
+
+.soundOff {
+    background-image: url('../Images/soundOff.png');
+}
+
+@media (min-width: 900px) {
+    .MetronomeWindow {
+        width: 800px;
+    }
+
+    h1 {
+        font-size: 47px;
+    }
+}
+
+@media (min-width:400px) and (max-width: 900px) {
+    h1 {
+        font-size: 1.8em;
+    }
+}
