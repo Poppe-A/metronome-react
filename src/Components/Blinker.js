@@ -4,14 +4,14 @@ import './Blinker.css';
 import click from '../click.mp3';
 import Uifx from 'uifx';
 import Aux from '../hoc/Aux';
-
+import timerWorker from '../Workers/timer.worker.js';
 
 class Blinker extends Component {
     constructor(props) {
         super(props)
         this.timer = null;
         this.ac = new AudioContext();
-
+        
         this.audio = new Uifx(click);
 
         this.state = {
@@ -30,38 +30,46 @@ class Blinker extends Component {
       }
       
       clampTempo = (t) => {
-        return clamp(t, 30, 300);
+        return this.clamp(t, 30, 300);
       }
       
        getTempo = () => {
         // return clampTempo(parseFloat($("input").value));
-        return clampTempo(130);
+        return this.clampTempo(130);
       }
       
       
        setupTempo = () => {
-        var buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+        var buf = this.ac.createBuffer(1, this.ac.sampleRate * 2, this.ac.sampleRate);
         var channel = buf.getChannelData(0);
         var phase = 0;
         var amp = 1;
-        var duration_frames = ac.sampleRate / 50;
+        var duration_frames = this.ac.sampleRate / 50;
         const f = 330;
       
         for (var i = 0; i < duration_frames; i++) {
           channel[i] = Math.sin(phase) * amp;
-          phase += 2 * Math.PI * f / ac.sampleRate;
+          phase += 2 * Math.PI * f / this.ac.sampleRate;
           if (phase > 2 * Math.PI) {
             phase -= 2 * Math.PI;
           }
           amp -= 1 / duration_frames;
         }
       
-        var source = ac.createBufferSource();
+        var source = this.ac.createBufferSource();
         source.buffer = buf;
-        source.loop = true;
-        source.loopEnd = 1 / (getTempo() / 60);
-        source.connect(ac.destination);
-        source.start(0);
+        // source.loop = true;
+        //source.loopEnd = 1 / (this.getTempo() / 60);
+        source.connect(this.ac.destination);
+        // source.onended(() => console.log("ended"))
+        var a = new Promise((resolve, reject) => {
+            console.log("start")
+            source.start(1);
+            resolve("lol")
+        });
+        a.then(b => {
+            console.log("ok");
+        })
       }
 
 
@@ -92,7 +100,8 @@ class Blinker extends Component {
         }
 
         if(prevState.tempo !== this.state.tempo) {
-            this.startTempo();
+            this.setupTempo();
+            //this.startTempo();
         }
     }
 
@@ -129,7 +138,7 @@ class Blinker extends Component {
         })
         
         if(this.props.playSound) {
-            this.audio.play();
+            //this.audio.play();
         }
     }
 
