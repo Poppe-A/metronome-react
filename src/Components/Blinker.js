@@ -10,7 +10,7 @@ class Blinker extends Component {
         this.timer = null;
         this.ac = new AudioContext();
 
-        this.audio = new Uifx(click);
+        // this.audio = new Uifx(click);
 
         this.state = {
             blinkerParts : this.initBlinkerPart(this.props.timeSignature || 4),
@@ -24,20 +24,20 @@ class Blinker extends Component {
 
     componentDidMount() {
    
-        this.worker.addEventListener('message', e => {
+        // this.worker.addEventListener('message', e => {
 
 
-            if(e.data === "tick") {
-                if(this.props.playSound) {
-                    // this.startSound();
-                }
-                // this.updateBlinker();
+        //     if(e.data === "tick") {
+        //         if(this.props.playSound) {
+        //             // this.startSound();
+        //         }
+        //         // this.updateBlinker();
 
-            } else if (e.data === "firstTick") {
-                this.configuredSound = this.configureSound();
-                this.startSound();
-            }
-          });
+        //     } else if (e.data === "firstTick") {
+        //         this.configuredSound = this.configureSound();
+        //         this.startSound();
+        //     }
+        //   });
     }
 
      
@@ -66,7 +66,7 @@ class Blinker extends Component {
     //   }
     configureSound() {
       
-       setupTempo = () => {
+    //    setupTempo = () => {
         var buf = this.ac.createBuffer(1, this.ac.sampleRate * 2, this.ac.sampleRate);
         var channel = buf.getChannelData(0);
         var phase = 0;
@@ -90,7 +90,7 @@ class Blinker extends Component {
         source.loopEnd = 1 / (this.getTempo() / 60);
         source.connect(this.ac.destination);
         source.start(0);
-      }
+    //   }
 
         this.buffer = buf;
     }
@@ -173,7 +173,7 @@ class Blinker extends Component {
         })
         
         if(this.props.playSound) {
-            this.audio.play();
+            // this.audio.play();
         }
     }
 
