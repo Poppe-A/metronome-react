@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
 import './Blinker.css';
-import click from '../click.mp3';
-import Uifx from 'uifx';
 import Aux from '../hoc/Aux';
 
 
@@ -23,11 +21,27 @@ class Blinker extends Component {
 
     }
 
-    //audio api
 
-    clamp = (v, min, max) => {
-        return Math.min(max, Math.max(min, v));
-      }
+    componentDidMount() {
+   
+        this.worker.addEventListener('message', e => {
+
+
+            if(e.data === "tick") {
+                if(this.props.playSound) {
+                    // this.startSound();
+                }
+                // this.updateBlinker();
+
+            } else if (e.data === "firstTick") {
+                this.configuredSound = this.configureSound();
+                this.startSound();
+            }
+          });
+    }
+
+     
+
       
       clampTempo = (t) => {
         return clamp(t, 30, 300);
@@ -38,6 +52,19 @@ class Blinker extends Component {
         return clampTempo(130);
       }
       
+     startSound = () => {
+        var source = this.ac.createBufferSource();
+        source.buffer = this.buffer;
+        
+        source.loop = true;
+        source.connect(this.ac.destination);
+        source.start();
+      }
+
+    //   stopSound = () => {
+    //       this.ac.
+    //   }
+    configureSound() {
       
        setupTempo = () => {
         var buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
@@ -48,6 +75,7 @@ class Blinker extends Component {
         const f = 330;
       
         for (var i = 0; i < duration_frames; i++) {
+            
           channel[i] = Math.sin(phase) * amp;
           phase += 2 * Math.PI * f / ac.sampleRate;
           if (phase > 2 * Math.PI) {
@@ -64,7 +92,24 @@ class Blinker extends Component {
         source.start(0);
       }
 
+        this.buffer = buf;
+    }
 
+
+    ////////// WORKER
+    startWorkerTempo = () => {
+        let blinkTime = (60000/this.state.tempo);
+        
+        this.worker.postMessage({message:'start', tempo: blinkTime});
+    }
+
+    stopWorkerTempo = () => {
+        let blinkTime = (60000/this.state.tempo);
+        
+        this.worker.postMessage({message:'stop', tempo: blinkTime});
+    }
+
+    ///////////////// BLINKER
 
     initBlinkerPart = (timeSignature) => {
         let blinkerParts = [];
@@ -112,8 +157,7 @@ class Blinker extends Component {
     bipBlink = (defaultTempo) => {
         console.log(" count ", this.state.count)
         let tempBlinkerparts = [...this.state.blinkerParts];
-        let tempCount = defaultTempo ? defaultTempo : this.state.count;
-        console.log("bipblink parts count", defaultTempo, tempCount);
+        let tempCount = this.state.count;
         if(tempCount > 0) {
             tempBlinkerparts[tempCount-1].bipped = false;
         } else {
@@ -134,7 +178,6 @@ class Blinker extends Component {
     }
 
     render() { 
-        // console.log("render blinker", this.state)
         const tabTodisplay = this.state.blinkerParts.map((el, index) => {
         const bippedClass = el.bipped ? "bipped" : "";
             return <div 
