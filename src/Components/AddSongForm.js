@@ -7,22 +7,22 @@ class addSongForm extends Component {
         this.setState({songTitle: event.target.value})
     }
 
-    componentDidMount() {
-        console.log("component did mount")
-    }
-
     componentDidUpdate(prevProps) {
         //Typical usage, don't forget to compare the props
         if (this.props.songEdition.title !== prevProps.songEdition.title) {
-          console.log("different name")
           this.setState({songTitle: this.props.songEdition.title})
         }
        }
 
-  
-
 
     render () {
+        let deleteButton = null;
+
+    if (this.props.songEdition.id) {
+        deleteButton = (
+            <button onClick={this.props.deleteSong}>Delete</button>
+        );
+    }
         return (
             <div className="AddSongMod">
                 <p className={"FormTitle"}>{this.props.songEdition.id ? "Edit Song" : "Add Song"}</p>
@@ -40,9 +40,9 @@ class addSongForm extends Component {
                         <p>Time signature :</p>
                         <input type="text" value={this.props.songEdition.timeSignature || ""} onChange={this.props.changeEditionSignature} />
                     </label>
-                    <input type="submit" value={this.props.songEdition.id ? "Update" : "Create"} />
                 </form>
-              
+                <button onClick={this.props.mainButtonFunction}>{this.props.mainButtonLabel}</button>
+                {deleteButton}
             </div>
         )
     }
